@@ -1,12 +1,13 @@
-from tests.resources import tasks
+import requests
 
-BASE_URL = 'http://localhost:5000/todo/api/v1.0'
+from tests.resources import tasks
+from tests.resources.tasks import BASE_URL
 
 
 def test_unauthorized_read_tasks():
-    response = tasks.read()[0]
+    response = requests.get(BASE_URL + '/tasks')
 
-    assert response.status_code != 200
+    assert response.status_code == 403
     assert response.json()['error'] == 'Unauthorized access'
 
 
@@ -14,8 +15,8 @@ def test_authorized_read_tasks():
     response, read_tasks = tasks.read()
 
     assert response.status_code == 200
-    assert len(read_tasks) == 3
-    assert read_tasks[0] == 'Buy groceries'
+    assert len(read_tasks) == 2
+    assert read_tasks[0]['title'] == 'Buy groceries'
 
 
 def test_authorized_create_task():
@@ -37,6 +38,6 @@ def test_e2e_authorized_create_task():
     assert created_task['description'] == ''
     assert created_task['done'] == False
 
-    new_task = tasks.read()
+    new_task = tasks.read()[1]
 
     assert len(new_task) == len(original_tasks) + 1

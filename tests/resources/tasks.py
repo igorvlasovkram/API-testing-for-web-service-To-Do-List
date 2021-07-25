@@ -4,7 +4,7 @@ import requests
 BASE_URL = 'http://localhost:5000/todo/api/v1.0'
 
 
-def authorized(resource_url, json=None):
+def authorized(resource_url, json=None) -> dict:
     return dict(
         url=BASE_URL + resource_url,
         auth=('miguel', 'python'),

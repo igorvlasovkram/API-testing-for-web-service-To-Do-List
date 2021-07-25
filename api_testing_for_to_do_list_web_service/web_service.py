@@ -23,12 +23,12 @@ def unauthorized():
 
 @app.errorhandler(400)
 def not_found(error):
-    return make_response(jsonify({'error': 'Bad request'}), 400)
+    return make_response(jsonify({f'{error}': 'Bad request'}), 400)
 
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    return make_response(jsonify({f'{error}': 'Not found'}), 404)
 
 
 tasks = [
@@ -64,13 +64,13 @@ def make_public_task(task):
 @app.route('/todo/api/v1.0/tasks', methods=['GET'])
 @auth.login_required
 def get_tasks():
-    return jsonify({'tasks': map(make_public_task, tasks)})
+    return jsonify({'tasks': list(map(make_public_task, tasks))})
 
 
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
 @auth.login_required
 def get_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    task = list(filter(lambda t: t['id'] == task_id, tasks))
     if len(task) == 0:
         abort(404)
     return jsonify({'task': make_public_task(task[0])})
@@ -94,14 +94,14 @@ def create_task():
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
 @auth.login_required
 def update_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    task = list(filter(lambda t: t['id'] == task_id, tasks))
     if len(task) == 0:
         abort(404)
     if not request.json:
         abort(400)
     if 'title' in request.json and type(request.json['title']) != unicode:
         abort(400)
-    if 'description' in request.json and type(request.json['description'])\
+    if 'description' in request.json and type(request.json['description']) \
             is not unicode:
         abort(400)
     if 'done' in request.json and type(request.json['done']) is not bool:
@@ -124,7 +124,7 @@ def update_task(task_id):
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['DELETE'])
 @auth.login_required
 def delete_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    task = list(filter(lambda t: t['id'] == task_id, tasks))
     if len(task) == 0:
         abort(404)
     tasks.remove(task[0])
