@@ -12,9 +12,13 @@ def authorized(resource_url, json=None) -> dict:
     )
 
 
-def read() -> tuple:
-    response = requests.get(**authorized('/tasks'))
-    return response, response.json()['tasks']
+def read(task_id: str = '') -> tuple:
+    if task_id == '':
+        response = requests.get(**authorized('/tasks'))
+        return response, response.json()['tasks']
+    else:
+        response = requests.get(**authorized('/tasks' + '/' + task_id))
+        return response, response.json()['task']
 
 
 def create(task: dict) -> tuple:
