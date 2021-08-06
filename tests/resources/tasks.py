@@ -1,6 +1,5 @@
 import requests
 
-
 BASE_URL = 'http://localhost:5000/todo/api/v1.0'
 
 
@@ -27,3 +26,12 @@ def create(task: dict) -> tuple:
         json=task
     ))
     return response, response.json()['task']
+
+
+def delete(tasks_id: str):
+    return requests.delete(**authorized('/tasks' + '/' + tasks_id))
+
+
+def put(tasks_id, new_param: dict):
+    return requests.put(
+        **authorized('/tasks' + '/' + tasks_id, json=new_param))
