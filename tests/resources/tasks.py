@@ -11,13 +11,13 @@ def authorized(resource_url, json=None) -> dict:
     )
 
 
-def read(task_id: str = '') -> tuple:
-    if task_id == '':
+def read(task_id: int = None) -> tuple:
+    if task_id:
+        response = requests.get(**authorized('/tasks' + '/' + str(task_id)))
+        return response, response.json()['task']
+    else:
         response = requests.get(**authorized('/tasks'))
         return response, response.json()['tasks']
-    else:
-        response = requests.get(**authorized('/tasks' + '/' + task_id))
-        return response, response.json()['task']
 
 
 def create(task: dict) -> tuple:
@@ -28,10 +28,10 @@ def create(task: dict) -> tuple:
     return response, response.json()['task']
 
 
-def delete(tasks_id: str):
-    return requests.delete(**authorized('/tasks' + '/' + tasks_id))
+def delete(tasks_id: int):
+    return requests.delete(**authorized('/tasks' + '/' + str(tasks_id)))
 
 
-def put(tasks_id, new_param: dict):
-    return requests.put(
-        **authorized('/tasks' + '/' + tasks_id, json=new_param))
+def put(tasks_id: int, new_param: dict):
+    return requests\
+        .put(**authorized('/tasks' + '/' + str(tasks_id), json=new_param))

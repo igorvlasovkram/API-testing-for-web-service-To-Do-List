@@ -131,5 +131,26 @@ def delete_task(task_id):
     return jsonify({'result': True})
 
 
+@app.route('/todo/api/v1.0/origin_tasks', methods=['POST'])
+def turnback_to_origin_store_state():
+    global tasks
+    tasks.clear()
+    task_1 = {
+            'id': 1,
+            'title': u'Buy groceries',
+            'description': u'Milk, Cheese, Pizza, Fruit, Tylenol',
+            'done': False
+    }
+    tasks.append(task_1)
+    task_2 = {
+            'id': 2,
+            'title': u'Learn Python',
+            'description': u'Need to find a good Python tutorial on the web',
+            'done': False
+        }
+    tasks.append(task_2)
+    return jsonify({'tasks': tasks})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
